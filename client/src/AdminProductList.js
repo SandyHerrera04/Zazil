@@ -1,171 +1,41 @@
-/*import React, { useState, useEffect } from "react";
-import axios from "axios";
-import { getBaseURL } from "../apiConfig";
-import "./AdminProductList.scss";
-
-const ProductList = (props) => {
-  const [products, setProducts] = useState([]);
-  const [productName, setProductName] = useState("");
-  const [productPrice, setProductPrice] = useState(0);
-  const [productDesc, setProductDesc] = useState("");
-
-  const addProduct = () => {
-    let name = productName;
-    let price = productPrice;
-    let description = productDesc;
-    if (name !== "" && price > 0 && description !== "") {
-      axios
-        .post(`${getBaseURL()}api/products/create`, { name, price, description })
-        .then((res) => {
-          console.log("Product added");
-          fetchProducts();
-        })
-        .catch((err) => console.log("Product added"));
-    }
-  };
-
-  useEffect(() => {
-    fetchProducts();
-  }, []);
-
-  const openProductDetails = (product) => {
-    props.handleProductDetails(product);
-  };
-
-  const deleteProduct = (productId) => {
-    axios
-      .delete(`${getBaseURL()}api/products/delete/${productId}`)
-      .then((res) => {
-        console.log("Deletion successful");
-        fetchProducts();
-      })
-      .catch((err) => console.log("Error"));
-  };
-
-  const fetchProducts = () => {
-    axios
-      .get(`${getBaseURL()}api/products`)
-      .then((res) => {
-        const data = res.data;
-        setProducts(data);
-      })
-      .catch((err) => console.log("Couldn't receive list"));
-  };
-
-  return (
-    <div className="product-list-container">
-      <div className="add-product-section">
-        <label htmlFor="productName">Product Name:</label>
-        <input
-          type="text"
-          id="productName"
-          value={productName}
-          onChange={(e) => {
-            setProductName(e.target.value);
-          }}
-          placeholder="Product Name"
-        />
-        <label htmlFor="productPrice">Price:</label>
-        <input
-          type="number"
-          id="productPrice"
-          value={productPrice}
-          onChange={(e) => {
-            setProductPrice(e.target.value);
-          }}
-          placeholder="Price"
-        />
-        <label htmlFor="productDesc">Description:</label>
-        <input
-          type="text"
-          id="productDesc"
-          value={productDesc}
-          onChange={(e) => {
-            setProductDesc(e.target.value);
-          }}
-          placeholder="Description"
-        />
-        <button onClick={addProduct}>Add Product</button>
-      </div>
-      <div className="product-list">
-        <h1>Product List</h1>
-        <table>
-          <thead>
-            <tr>
-              <th>Id</th>
-              <th>Name</th>
-              <th>Price</th>
-              <th>Created Date</th>
-              <th>Details</th>
-              <th>Delete</th>
-            </tr>
-          </thead>
-          <tbody>
-            {products.map((product) => {
-              return (
-                <tr key={product.productId}>
-                  <td>{product.productId}</td>
-                  <td>{product.name}</td>
-                  <td>{product.price}</td>
-                  <td>{product.createdDate}</td>
-                  <td>
-                    <button
-                      onClick={() => {
-                        openProductDetails(product);
-                      }}
-                    >
-                      Details
-                    </button>
-                  </td>
-                  <td>
-                    <button onClick={() => deleteProduct(product.productId)}>
-                      Delete
-                    </button>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  );
-};
-
-export default ProductList;
-*/
-
-
 import React, { useState, useEffect } from "react";
-import axios from "axios";
-import { getBaseURL } from "../apiConfig";
-import "./AdminProductList.scss";
+import axios from "axios"; // Librería para realizar solicitudes HTTP
+import { getBaseURL } from "../apiConfig"; // Función para obtener la URL base de la API
+import "./AdminProductList.scss"; // Archivo de estilos para la lista de productos
 
+/**
+ * Componente para listar y gestionar productos en la aplicación de administración.
+ */
 const ProductList = (props) => {
+  // Estado que contiene la lista de productos
   const [products, setProducts] = useState([]);
 
-  // Campos para agregar un nuevo producto
-  const [productName, setProductName] = useState("");
-  const [productPrice, setProductPrice] = useState(0);
-  const [productDesc, setProductDesc] = useState("");
-  const [productImage, setProductImage] = useState(null); 
-  const [productType, setProductType] = useState("");
-  const [productNovedad, setProductNovedad] = useState(false);
-  const [productDescuento, setProductDescuento] = useState(false);
-  const [productCantidadDescuento, setProductCantidadDescuento] = useState(0);
+  // Estados para agregar un nuevo producto
+  const [productName, setProductName] = useState(""); // Nombre del producto
+  const [productPrice, setProductPrice] = useState(0); // Precio del producto
+  const [productDesc, setProductDesc] = useState(""); // Descripción del producto
+  const [productImage, setProductImage] = useState(null); // Imagen del producto
+  const [productType, setProductType] = useState(""); // Tipo de producto
+  const [productNovedad, setProductNovedad] = useState(false); // Indicador de novedad
+  const [productDescuento, setProductDescuento] = useState(false); // Indicador de descuento
+  const [productCantidadDescuento, setProductCantidadDescuento] = useState(0); // Cantidad de descuento
 
-  // Añadir un producto
+  /**
+   * Función para agregar un producto nuevo.
+   * Crea un objeto FormData para enviar información junto con la imagen del producto.
+   */
   const addProduct = () => {
     const formData = new FormData();
     formData.append("name", productName);
     formData.append("price", productPrice);
     formData.append("description", productDesc);
-    formData.append("imagen", productImage);
+    formData.append("imagen", productImage); // Agregar imagen al FormData
     formData.append("tipo", productType);
     formData.append("novedad", productNovedad);
     formData.append("descuento", productDescuento);
     formData.append("cantidadDescuento", productCantidadDescuento);
 
+    // Realizar solicitud POST para crear un nuevo producto
     axios
       .post(`${getBaseURL()}api/products/create`, formData, {
         headers: {
@@ -174,21 +44,26 @@ const ProductList = (props) => {
       })
       .then((res) => {
         console.log("Product added");
-        fetchProducts();
+        fetchProducts(); // Actualizar la lista de productos después de agregar uno nuevo
       })
       .catch((err) => console.log("Error adding product"));
   };
 
-  // Obtener todos los productos
+  /**
+   * Función para obtener la lista de productos desde la API.
+   */
   const fetchProducts = () => {
     axios
-      .get(`${getBaseURL()}api/products`)
+      .get(`${getBaseURL()}api/products`) // Solicitud GET a la API de productos
       .then((res) => {
-        setProducts(res.data);
+        setProducts(res.data); // Guardar los productos en el estado
       })
       .catch((err) => console.log("Couldn't receive list"));
   };
 
+  /**
+   * useEffect para cargar la lista de productos cuando el componente se monta.
+   */
   useEffect(() => {
     fetchProducts();
   }, []);
@@ -199,7 +74,7 @@ const ProductList = (props) => {
         <h1>✨Administración de productos✨</h1>
       </header>
 
-      {/* Filtros de productos */}
+      {/* Sección de filtros de productos */}
       <div className="filter-section">
         <div className="filter-dropdown">
           <label htmlFor="productType">Productos</label>
@@ -338,4 +213,3 @@ const ProductList = (props) => {
 };
 
 export default ProductList;
-
