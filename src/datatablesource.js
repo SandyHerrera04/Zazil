@@ -1,71 +1,54 @@
+// Importación de React
+import React from 'react';
+
+// Definición de las columnas para la tabla de usuarios
 export const userColumns = [
-  { field: "id", headerName: "ID", width: 70 },
+  { 
+    field: "id", 
+    headerName: "ID", 
+    width: 70 // Ancho de la columna ID
+  },
   {
-    field: "user",
+    field: "name",
     headerName: "User",
-    width: 230,
+    width: 230, // Ancho de la columna User
     renderCell: (params) => {
-      return (
-        <div className="cellWithImg">
-          <img className="cellImg" src={params.row.img} alt="avatar" />
-          {params.row.username}
-        </div>
-      );
+      // Función para renderizar el contenido de la celda (actualmente vacía)
     },
   },
-
   {
     field: "password",
     headerName: "Contraseña",
-    width: 230,
+    width: 230, // Ancho de la columna Contraseña
   },
-
   {
-    field: "tel",
+    field: "phone",
     headerName: "Teléfono",
-    width: 180,
+    width: 180, // Ancho de la columna Teléfono
   },
-
   {
     field: "email",
     headerName: "Correo",
-    width: 230,
+    width: 230, // Ancho de la columna Correo
   },
-
   {
     field: "birthdate",
     headerName: "Fecha de Nacimiento",
-    width: 180,
+    width: 180, // Ancho de la columna Fecha de Nacimiento
   },
-
   {
     field: "curp",
     headerName: "CURP",
-    width: 200,
+    width: 200, // Ancho de la columna CURP
   },
-
   {
-    field: "address",
+    field: "location",
     headerName: "Localidad",
-    width: 200,
+    width: 200, // Ancho de la columna Localidad
   },
-
   {
-    field: "type",
-    headerName: "Tipo",
-    width: 150,
-  },
-
-  {
-    field: "status",
-    headerName: "Status",
-    width: 160,
-    renderCell: (params) => {
-      return (
-        <div className={`cellWithStatus ${params.row.status}`}>
-          {params.row.status}
-        </div>
-      );
-    },
+    field: "direction",
+    headerName: "Dirección",
+    width: 200, // Ancho de la columna Dirección
   },
 ];
