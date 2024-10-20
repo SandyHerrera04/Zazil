@@ -1,0 +1,16 @@
+{
+  "files": {
+    "main.css": "/static/css/main.ff0ebd77.css",
+    "main.js": "/static/js/main.a1fdb216.js",
+    "static/media/back.mp4": "/static/media/back.a0ba53f9e0d94c59030a.mp4",
+    "static/media/login.mp4": "/static/media/login.77872c1eb14c4195fa44.mp4",
+    "static/media/zazil.png": "/static/media/zazil.6c355ef1120c8cf853e7.png",
+    "index.html": "/index.html",
+    "main.ff0ebd77.css.map": "/static/css/main.ff0ebd77.css.map",
+    "main.a1fdb216.js.map": "/static/js/main.a1fdb216.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.ff0ebd77.css",
+    "static/js/main.a1fdb216.js"
+  ]
+}
