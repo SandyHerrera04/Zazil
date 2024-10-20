@@ -1,50 +1,83 @@
+/*Functionality: This file is in charge of giving the charts in the admin webpage
+of the top (5) more purschased pads in all the orders*/
+import React, { useEffect, useState } from "react";
 import "./chart.scss";
 import {
-  AreaChart,
-  Area,
-  XAxis,
-  CartesianGrid,
+  PieChart,
+  Pie,
+  Cell,
   Tooltip,
   ResponsiveContainer,
+  Legend,
 } from "recharts";
+import { getDocs, collection } from "firebase/firestore";
+import { db } from "../../firebase"; 
 
-const data = [
-  { name: "January", Total: 1200 },
-  { name: "February", Total: 2100 },
-  { name: "March", Total: 800 },
-  { name: "April", Total: 1600 },
-  { name: "May", Total: 900 },
-  { name: "June", Total: 1700 },
-];
+const COLORS = ["#f38181", "#800080", "#DA70D6", "#574b90", "#D8BFD8"];
 
 const Chart = ({ aspect, title }) => {
+  const [productData, setProductData] = useState([]);
+
+  useEffect(() => {
+    const fetchProductData = async () => {
+      try {
+        const querySnapshot = await getDocs(collection(db, "orders"));
+        const productCount = {};
+
+        // Count occurrences of each product in the orders
+        querySnapshot.forEach((doc) => {
+          const order = doc.data();
+          const product = order.product;
+
+          if (product) {
+            if (productCount[product]) {
+              productCount[product] += 1; 
+            } else {
+              productCount[product] = 1; 
+            }
+          }
+        });
+
+
+        let formattedData = Object.keys(productCount).map((product) => ({
+          name: product,
+          value: productCount[product],
+        }));
+
+
+        formattedData = formattedData.sort((a, b) => b.value - a.value).slice(0, 5);
+
+        setProductData(formattedData);
+      } catch (error) {
+        console.error("Error fetching product data from Firestore:", error);
+      }
+    };
+
+    fetchProductData();
+  }, []);
+
   return (
-    <div className="chart">
-      <div className="title">{title}</div>
+    <div className="chart-container">
+      <div className="chart-title">{title}</div>
       <ResponsiveContainer width="100%" aspect={aspect}>
-        <AreaChart
-          width={730}
-          height={250}
-          data={data}
-          margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
-        >
-          <defs>
-            <linearGradient id="total" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8} />
-              <stop offset="95%" stopColor="#8884d8" stopOpacity={0} />
-            </linearGradient>
-          </defs>
-          <XAxis dataKey="name" stroke="gray" />
-          <CartesianGrid strokeDasharray="3 3" className="chartGrid" />
+        <PieChart>
+          <Pie
+            data={productData}
+            cx="50%"
+            cy="50%"
+            innerRadius={60}
+            outerRadius="80%"
+            fill="#8884d8"
+            dataKey="value"
+            label
+          >
+            {productData.map((entry, index) => (
+              <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+            ))}
+          </Pie>
           <Tooltip />
-          <Area
-            type="monotone"
-            dataKey="Total"
-            stroke="#8884d8"
-            fillOpacity={1}
-            fill="url(#total)"
-          />
-        </AreaChart>
+          <Legend verticalAlign="top" height={36} />
+        </PieChart>
       </ResponsiveContainer>
     </div>
   );

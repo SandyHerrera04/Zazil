@@ -1,15 +1,35 @@
-.chart {
-  flex: 4;
-  -webkit-box-shadow: 2px 4px 10px 1px rgba(0, 0, 0, 0.47);
-  box-shadow: 2px 4px 10px 1px rgba(201, 201, 201, 0.47);
+.chart-container {
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
   padding: 10px;
-  color: gray;
+  box-sizing: border-box;
+}
 
-  .title {
-    margin-bottom: 20px;
+.chart-title {
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #770737;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 768px) {
+  .chart-container {
+    max-width: 100%;
+    padding: 5px;
   }
 
-  .chartGrid {
-    stroke: rgb(228, 225, 225);
+  .chart-title {
+    font-size: 1.3rem;
+  }
+
+  .charts {
+    width: 100%;
+  }
+
+  .pieChart {
+    width: 100%;
   }
 }
+
