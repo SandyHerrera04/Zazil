@@ -12,27 +12,29 @@ import { db, storage } from "../../firebase";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { useNavigate } from "react-router-dom";
 
+// Componente New para agregar nuevos productos
 const New = ({ inputs, title }) => {
-  const [file, setFile] = useState("");
-  const [data, setData] = useState({});
+  const [file, setFile] = useState(""); // Estado para manejar el archivo de imagen
+  const [data, setData] = useState({}); // Estado para manejar los datos del formulario
   const [discountEnabled, setDiscountEnabled] = useState(false); // Para manejar si el descuento está habilitado
-  const [discountPercent, setDiscountPercent] = useState(0);
-  const [discountAmount, setDiscountAmount] = useState(0);
-  const [per, setPerc] = useState(null);
-  const navigate = useNavigate();
+  const [discountPercent, setDiscountPercent] = useState(0); // Porcentaje de descuento
+  const [discountAmount, setDiscountAmount] = useState(0); // Monto del descuento
+  const [per, setPerc] = useState(null); // Porcentaje de progreso de la carga de la imagen
+  const navigate = useNavigate(); // Hook para la navegación
 
+  // useEffect para manejar la carga del archivo de imagen
   useEffect(() => {
     const uploadFile = () => {
-      const product = new Date().getTime() + file.name;
-      const storageRef = ref(storage, product);
-      const uploadTask = uploadBytesResumable(storageRef, file);
+      const product = new Date().getTime() + file.name; // Nombre único para el archivo
+      const storageRef = ref(storage, product); // Referencia de almacenamiento en Firebase
+      const uploadTask = uploadBytesResumable(storageRef, file); // Tarea de carga
 
       uploadTask.on(
         "state_changed",
         (snapshot) => {
           const progress =
-            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          setPerc(progress);
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100; // Calcula el progreso
+          setPerc(progress); // Actualiza el estado del progreso
           switch (snapshot.state) {
             case "paused":
               break;
@@ -43,18 +45,19 @@ const New = ({ inputs, title }) => {
           }
         },
         (error) => {
-          console.log(error);
+          console.log(error); // Manejo de errores
         },
         () => {
           getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-            setData((prev) => ({ ...prev, img: downloadURL }));
+            setData((prev) => ({ ...prev, img: downloadURL })); // Actualiza el estado con la URL de la imagen
           });
         }
       );
     };
-    file && uploadFile();
+    file && uploadFile(); // Llama a uploadFile si hay un archivo seleccionado
   }, [file]);
 
+  // Maneja los cambios en los inputs del formulario
   const handleInput = (e) => {
     const id = e.target.id;
     const value = e.target.value;
@@ -70,6 +73,7 @@ const New = ({ inputs, title }) => {
     }
   };
 
+  // Maneja el cambio en el checkbox de habilitar descuento
   const handleDiscountChange = (e) => {
     setDiscountEnabled(e.target.checked);
     if (e.target.checked && data.price && discountPercent) {
@@ -79,6 +83,7 @@ const New = ({ inputs, title }) => {
     }
   };
 
+  // Calcula el monto del descuento
   const calculateDiscount = (price, discountPercent) => {
     if (price && discountPercent) {
       const discount = price - (price * discountPercent) / 100;
@@ -88,6 +93,7 @@ const New = ({ inputs, title }) => {
     }
   };
 
+  // Maneja el envío del formulario
   const handleAdd = async (e) => {
     e.preventDefault();
     try {
@@ -96,9 +102,9 @@ const New = ({ inputs, title }) => {
         discountAmount, // Incluir el precio con descuento calculado
         timeStamp: serverTimestamp(),
       });
-      navigate(-1);
+      navigate(-1); // Navega hacia atrás después de agregar el producto
     } catch (err) {
-      console.log(err);
+      console.log(err); // Manejo de errores
     }
   };
 
