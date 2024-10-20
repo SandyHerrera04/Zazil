@@ -1,73 +1,72 @@
+import React, { useState } from "react";
 import "./sidebar.scss";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
-import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import CreditCardIcon from "@mui/icons-material/CreditCard";
 import StoreIcon from "@mui/icons-material/Store";
-import InsertChartIcon from "@mui/icons-material/InsertChart";
-import SettingsApplicationsIcon from "@mui/icons-material/SettingsApplications";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
-import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
-import SettingsSystemDaydreamOutlinedIcon from "@mui/icons-material/SettingsSystemDaydreamOutlined";
-import PsychologyOutlinedIcon from "@mui/icons-material/PsychologyOutlined";
-import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
+import MenuIcon from "@mui/icons-material/Menu"; // Import the menu icon
 import { Link } from "react-router-dom";
 import { DarkModeContext } from "../../context/darkModeContext";
 import { useContext } from "react";
 
 const Sidebar = () => {
   const { dispatch } = useContext(DarkModeContext);
+  const [isExpanded, setIsExpanded] = useState(false); // State for controlling sidebar expand/collapse
+
+  const handleToggle = () => {
+    setIsExpanded(!isExpanded); // Toggle the sidebar's state
+  };
+
   return (
-    <div className="sidebar">
+    <div className={`sidebar ${isExpanded ? "expanded" : "collapsed"}`}> {/* Apply class based on state */}
       <div className="top">
-        <Link to="/" style={{ textDecoration: "none" }}>
-          <span className="logo">Zazil</span>
-        </Link>
+        <MenuIcon onClick={handleToggle} className="hamburger-icon" /> {/* Hamburger icon for toggling */}
+        {isExpanded && (
+          <Link to="/" style={{ textDecoration: "none" }}>
+            <span className="logo">ZAZIL</span>
+          </Link>
+        )}
       </div>
       <hr />
-      <div className="center">
-        <ul>
-          <p className="title">MAIN</p>
-          <Link to="/" style={{ textDecoration: "none" }}>
-          <li>
-            <DashboardIcon className="icon" />
-            <span>Dashboard</span>
-          </li>
-          </Link>
-          <p className="title">CONTENIDO</p>
-          <Link to="/users" style={{ textDecoration: "none" }}>
-            <li>
-              <PersonOutlineIcon className="icon" />
-              <span>Users</span>
-            </li>
-          </Link>
-          <Link to="/products" style={{ textDecoration: "none" }}>
-            <li>
-              <StoreIcon className="icon" />
-              <span>Products</span>
-            </li>
-          </Link>
-          <Link to="/orders" style={{ textDecoration: "none" }}>
-          <li>
-            <CreditCardIcon className="icon" />
-            <span>Pedidos</span>
-          </li>
-          </Link>
-          <p className="title">ADMIN</p>
-          <Link to="/perfil" style={{ textDecoration: "none" }}>
-          <li>
-            <AccountCircleOutlinedIcon className="icon" />
-            <span>Perfil</span>
-          </li>
-          </Link>
-          <Link to="/login" style={{ textDecoration: "none" }}>
-          <li>
-            <ExitToAppIcon className="icon" />
-            <span>Logout</span>
-          </li>
-          </Link>
-        </ul>
-      </div>
+      {isExpanded && (
+        <div className="center">
+          <ul>
+            <p className="title">Pantalla principal</p>
+            <Link to="/" style={{ textDecoration: "none" }}>
+              <li>
+                <DashboardIcon className="icon" />
+                <span>Dashboard</span>
+              </li>
+            </Link>
+            <p className="title">Contenido</p>
+            <Link to="/users" style={{ textDecoration: "none" }}>
+              <li>
+                <PersonOutlineIcon className="icon" />
+                <span>Usuarios</span>
+              </li>
+            </Link>
+            <Link to="/products" style={{ textDecoration: "none" }}>
+              <li>
+                <StoreIcon className="icon" />
+                <span>Productos</span>
+              </li>
+            </Link>
+            <Link to="/orders" style={{ textDecoration: "none" }}>
+              <li>
+                <CreditCardIcon className="icon" />
+                <span>Pedidos</span>
+              </li>
+            </Link>
+            <Link to="/login" style={{ textDecoration: "none" }}>
+              <li>
+                <ExitToAppIcon className="icon" />
+                <span>Logout</span>
+              </li>
+            </Link>
+          </ul>
+        </div>
+      )}
       <div className="bottom">
         <div
           className="colorOption"

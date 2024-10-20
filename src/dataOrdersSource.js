@@ -1,38 +1,36 @@
-// Definición de las columnas para la tabla de órdenes
 export const orderColumns = [
-  { 
-    field: "id", 
-    headerName: "ID", 
-    width: 70 // Ancho de la columna ID
-  },
+  { field: "id", headerName: "ID", width: 70 },
   {
     field: "createdAt",
     headerName: "Fecha",
-    width: 150, // Ancho de la columna Fecha
+    width: 150,
     renderCell: (params) => {
-      // Obtiene la fecha de creación del objeto params
       const date = params.row.createdAt 
         ? (params.row.createdAt.toDate ? params.row.createdAt.toDate() : new Date(params.row.createdAt))
-        : null;  // Maneja el caso donde createdAt es indefinido
+        : null;  // Handle case where createdAt is undefined
       
-      // Formatea la fecha a una cadena legible en español
-      const formattedDate = date ? date.toLocaleDateString('es-ES') : 'Fecha no disponible'; // Mensaje de reserva
+      const formattedDate = date ? date.toLocaleDateString('es-ES') : 'Fecha no disponible'; // Fallback message
       return formattedDate;
     },
   },
   {
     field: "amount",
     headerName: "Precio",
-    width: 150, // Ancho de la columna Precio
+    width: 150,
   },
   {
     field: "currency",
     headerName: "Tipo de moneda",
-    width: 150, // Ancho de la columna Tipo de moneda
+    width: 150,
   },
   {
     field: "status",
     headerName: "Estatus",
-    width: 230, // Ancho de la columna Estatus
+    width: 230,
+  },
+  {
+    field: "product",
+    headerName: "Productos",
+    width: 230,
   },
 ];

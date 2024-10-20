@@ -103,3 +103,8 @@ const DatatableProducts = () => {
 };
 
 export default DatatableProducts;
+
+/*
+            /*<Link to="/products/test" style={{ textDecoration: "none" }}>
+              <div className="viewButton">Ver</div>
+            </Link>*/

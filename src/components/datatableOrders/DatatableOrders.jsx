@@ -16,22 +16,7 @@ const DatatableOrders = () => {
   const [data, setData] = useState([]);
 
   useEffect(() => {
-    // const fetchData = async () => {
-    //   let list = [];
-    //   try {
-    //     const querySnapshot = await getDocs(collection(db, "orders"));
-    //     querySnapshot.forEach((doc) => {
-    //       list.push({ id: doc.id, ...doc.data() });
-    //     });
-    //     setData(list);
-    //     console.log(list);
-    //   } catch (err) {
-    //     console.log(err);
-    //   }
-    // };
-    // fetchData();
 
-    // LISTEN (REALTIME)
     const unsub = onSnapshot(
       collection(db, "orders"),
       (snapShot) => {
@@ -53,10 +38,17 @@ const DatatableOrders = () => {
 
   const handleDelete = async (id) => {
     try {
-      await deleteDoc(doc(db, "orders", id));
-      setData(data.filter((item) => item.id !== id));
+
+      const docId = String(id);
+      
+      await deleteDoc(doc(db, "orders", docId));
+      
+      setData((prevData) => prevData.filter((item) => item.id !== docId));
+  
+      console.log(`Order with ID ${docId} deleted successfully.`);
     } catch (err) {
-      console.log(err);
+      console.log("Error deleting document:", err);
+      alert("Failed to delete order. Please try again.");
     }
   };
 
@@ -68,12 +60,15 @@ const DatatableOrders = () => {
       renderCell: (params) => {
         return (
           <div className="cellAction">
-            <Link to="/orders/test" style={{ textDecoration: "none" }}>
-              <div className="viewButton">Ver</div>
-            </Link>
             <div
               className="deleteButton"
-              onClick={() => handleDelete(params.row.id)}
+              onClick={() => {
+                if (!params.row.id) {
+                  console.error("Missing row ID:", params.row);
+                  return;
+                }
+                handleDelete(params.row.id);
+              }}
             >
               Borrar
             </div>

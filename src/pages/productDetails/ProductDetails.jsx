@@ -8,25 +8,24 @@ import { db, storage } from "../../firebase";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { useNavigate, useParams } from "react-router-dom";
 
-// Componente ProductDetails para mostrar y actualizar los detalles de un producto
 const ProductDetails = () => {
-  const { productId } = useParams(); // Obtiene el ID del producto desde los parámetros de la URL
-  const [file, setFile] = useState(null); // Estado para manejar el archivo de imagen
+  const { productId } = useParams();
+  const [file, setFile] = useState(null);
   const [data, setData] = useState({
     price: "",
     discountPercent: "",
     discountAmount: "",
-  }); // Estado para manejar los datos del producto
-  const [per, setPerc] = useState(null); // Estado para manejar el progreso de la carga de la imagen
-  const navigate = useNavigate(); // Hook para la navegación
+  });
+  const [per, setPerc] = useState(null);
+  const navigate = useNavigate();
 
   // Obtener los datos del producto desde Firebase
   useEffect(() => {
     const fetchProduct = async () => {
-      const docRef = doc(db, "products", productId); // Referencia al documento del producto en Firestore
-      const docSnap = await getDoc(docRef); // Obtiene el documento
+      const docRef = doc(db, "products", productId);
+      const docSnap = await getDoc(docRef);
       if (docSnap.exists()) {
-        setData(docSnap.data()); // Establece los datos del producto en el estado
+        setData(docSnap.data());
       } else {
         console.log("Producto no encontrado");
       }
@@ -37,35 +36,35 @@ const ProductDetails = () => {
   // Subir nueva imagen a Firebase si se selecciona
   useEffect(() => {
     const uploadFile = () => {
-      const fileName = new Date().getTime() + file.name; // Nombre único para el archivo
-      const storageRef = ref(storage, fileName); // Referencia de almacenamiento en Firebase
-      const uploadTask = uploadBytesResumable(storageRef, file); // Tarea de carga
+      const fileName = new Date().getTime() + file.name;
+      const storageRef = ref(storage, fileName);
+      const uploadTask = uploadBytesResumable(storageRef, file);
 
       uploadTask.on(
         "state_changed",
         (snapshot) => {
           const progress =
-            (snapshot.bytesTransferred / snapshot.totalBytes) * 100; // Calcula el progreso
-          setPerc(progress); // Actualiza el estado del progreso
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          setPerc(progress);
         },
         (error) => {
-          console.log(error); // Manejo de errores
+          console.log(error);
         },
         () => {
           getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-            setData((prevData) => ({ ...prevData, img: downloadURL })); // Actualiza el estado con la URL de la imagen
+            setData((prevData) => ({ ...prevData, img: downloadURL }));
           });
         }
       );
     };
-    file && uploadFile(); // Llama a uploadFile si hay un archivo seleccionado
+    file && uploadFile();
   }, [file]);
 
   // Manejar cambios en los inputs
   const handleInput = (e) => {
     const id = e.target.id;
     const value = e.target.value;
-    setData((prevData) => ({ ...prevData, [id]: value })); // Actualiza el estado con los nuevos valores de los inputs
+    setData((prevData) => ({ ...prevData, [id]: value }));
   };
 
   // Calcular Precio con Descuento cuando cambia el porcentaje de descuento
@@ -92,13 +91,13 @@ const ProductDetails = () => {
   const handleUpdate = async (e) => {
     e.preventDefault();
     try {
-      const docRef = doc(db, "products", productId); // Referencia al documento del producto en Firestore
+      const docRef = doc(db, "products", productId);
       await updateDoc(docRef, {
         ...data,
-      }); // Actualiza el documento con los nuevos datos
+      });
       navigate("/products"); // Redirigir a la lista de productos después de actualizar
     } catch (err) {
-      console.log(err); // Manejo de errores
+      console.log(err);
     }
   };
 

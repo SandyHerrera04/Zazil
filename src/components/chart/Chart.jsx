@@ -1,5 +1,3 @@
-/*Functionality: This file is in charge of giving the charts in the admin webpage
-of the top (5) more purschased pads in all the orders*/
 import React, { useEffect, useState } from "react";
 import "./chart.scss";
 import {

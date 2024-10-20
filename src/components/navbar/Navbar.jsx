@@ -1,5 +1,3 @@
-/*Funcitonality: The only fucntion of this file and feauture within the webpage is
-to display in the top part "Panle de Administrador */
 import "./navbar.scss";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { useState } from "react";

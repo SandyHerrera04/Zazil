@@ -1,90 +1,121 @@
 .sidebar {
-  flex: 1;
-  border-right: 0.5px solid rgb(230, 227, 227);
-  min-height: 100vh;
-  background-color: white;
+  width: 250px;
+  height: 100vh;
+  background-color: #f7f7f7; // Neutral background
+  position: sticky;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 2px 4px 10px 1px rgba(0, 0, 0, 0.1);
+  transition: width 0.3s ease; // Smooth transition for width
+  overflow: hidden;
+
+  &.collapsed {
+    width: 60px; // Sidebar is collapsed
+  }
+
+  &.expanded {
+    width: 250px; // Sidebar is expanded
+  }
 
   .top {
-    height: 50px;
     display: flex;
-    align-items: center;
     justify-content: center;
+    align-items: center;
+    padding: 20px;
+
+    .hamburger-icon {
+      cursor: pointer;
+      font-size: 24px; // Hamburger icon size
+      color: #770737; // Accent color
+    }
 
     .logo {
-      font-size: 20px;
+      font-size: 24px;
       font-weight: bold;
-      color: #6439ff;
+      color: #770737;
+      text-align: center;
+      transition: all 0.3s ease-in-out;
+
+      &:hover {
+        color: #4a0026; // Slightly darker on hover
+      }
     }
   }
 
   hr {
-    height: 0;
-    border: 0.5px solid rgb(230, 227, 227);
+    margin: 0;
+    border: none;
+    height: 1px;
+    background-color: #e0e0e0;
   }
 
   .center {
-    padding-left: 10px;
+    flex: 1;
+    padding: 10px;
+
+    .title {
+      font-size: 12px;
+      color: #999;
+      margin-bottom: 10px;
+    }
 
     ul {
       list-style: none;
-      margin: 0;
       padding: 0;
-
-      .title {
-        font-size: 10px;
-        font-weight: bold;
-        color: #999;
-        margin-top: 15px;
-        margin-bottom: 5px;
-      }
+      margin: 0;
 
       li {
         display: flex;
         align-items: center;
-        padding: 5px;
+        padding: 10px;
         cursor: pointer;
+        border-radius: 8px;
+        transition: background-color 0.3s ease, color 0.3s ease;
 
         &:hover {
-          background-color: #ece8ff;
+          background-color: #f0f0f0;
         }
 
         .icon {
+          color: #770737;
           font-size: 18px;
-          color: #7451f8;
         }
 
-        span{
-            font-size: 13px;
-            font-weight: 600;
-            color: #888;
-            margin-left: 10px;
+        span {
+          margin-left: 10px;
+          font-size: 16px;
+          font-weight: 500;
+          color: #333;
+        }
+
+        &:hover span {
+          font-weight: 600;
         }
       }
     }
   }
 
-  .bottom{
-      display: flex;
-      align-items: center;
-      margin: 10px;
+  .bottom {
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
 
-      .colorOption{
-          width: 20px;
-          height: 20px;
-          border-radius: 5px;
-          border: 1px solid #7451f8;
-          cursor: pointer;
-          margin: 5px;
+    .colorOption {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      border: 1px solid #999;
+      cursor: pointer;
 
-          &:nth-child(1){
-              background-color: whitesmoke;
-          }
-          &:nth-child(2){
-              background-color: #333;
-          }
-          &:nth-child(3){
-              background-color: darkblue;
-          }
+      &:first-child {
+        background-color: white;
       }
+
+      &:last-child {
+        background-color: black;
+      }
+    }
   }
 }

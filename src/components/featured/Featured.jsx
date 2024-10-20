@@ -1,5 +1,3 @@
-/*Functionality: The funcitonality of this file is to display anotehr grpah of the top 5 locations of all 
-the users, gives the 5 most repeated ones  */
 import React, { useEffect, useState } from "react";
 import "./featured.scss";
 import { Bar } from "react-chartjs-2";

@@ -1,54 +1,53 @@
-// Importación de React
 import React from 'react';
-
-// Definición de las columnas para la tabla de usuarios
 export const userColumns = [
-  { 
-    field: "id", 
-    headerName: "ID", 
-    width: 70 // Ancho de la columna ID
-  },
+  { field: "id", headerName: "ID", width: 70 },
   {
     field: "name",
     headerName: "User",
-    width: 230, // Ancho de la columna User
+    width: 230,
     renderCell: (params) => {
-      // Función para renderizar el contenido de la celda (actualmente vacía)
+
     },
   },
+
   {
     field: "password",
     headerName: "Contraseña",
-    width: 230, // Ancho de la columna Contraseña
+    width: 230,
   },
+
   {
     field: "phone",
     headerName: "Teléfono",
-    width: 180, // Ancho de la columna Teléfono
+    width: 180,
   },
+
   {
     field: "email",
     headerName: "Correo",
-    width: 230, // Ancho de la columna Correo
+    width: 230,
   },
+
   {
     field: "birthdate",
     headerName: "Fecha de Nacimiento",
-    width: 180, // Ancho de la columna Fecha de Nacimiento
+    width: 180,
   },
+
   {
     field: "curp",
     headerName: "CURP",
-    width: 200, // Ancho de la columna CURP
+    width: 200,
   },
+
   {
     field: "location",
     headerName: "Localidad",
-    width: 200, // Ancho de la columna Localidad
+    width: 200,
   },
   {
     field: "direction",
     headerName: "Dirección",
-    width: 200, // Ancho de la columna Dirección
+    width: 200,
   },
 ];

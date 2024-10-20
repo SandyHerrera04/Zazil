@@ -1,5 +1,5 @@
 /*Functionality: This code is the login, what are you going to see when the login page is 
-displayed, some features are displaying a mp4 background. */
+displayed. */
 import { useContext, useState } from "react";
 import "./login.scss";
 import { signInWithEmailAndPassword } from "firebase/auth";

@@ -6,10 +6,10 @@ import AccountBalanceWalletOutlinedIcon from "@mui/icons-material/AccountBalance
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import MonetizationOnOutlinedIcon from "@mui/icons-material/MonetizationOnOutlined";
 import { useEffect, useState } from "react";
-import { collection, query, where, getDocs } from "firebase/firestore";
-import { db } from "../../firebase";
+import { collection, getDocs } from "firebase/firestore";  
+import { getDatabase, ref, onValue } from "firebase/database";  // Realtime Database
+import { db as firestoreDb } from "../../firebase";  
 import { Link } from "react-router-dom";
-
 
 const Widget = ({ type }) => {
   const [amount, setAmount] = useState(null);
@@ -17,12 +17,16 @@ const Widget = ({ type }) => {
   let data;
 
   switch (type) {
-    case "user":
+    case "users":
       data = {
-        title: "USUARIOS",
+        title: "Usuarios",
         isMoney: false,
-        link: "See all users",
-        query:"users",
+        link: (
+          <Link to="/users" style={{ textDecoration: "none" }}>
+            Ver usuarios
+          </Link>
+        ),
+        query: "users",  
         icon: (
           <PersonOutlinedIcon
             className="icon"
@@ -36,10 +40,13 @@ const Widget = ({ type }) => {
       break;
     case "order":
       data = {
-        title: "PEDIDODOS",
-        query:"orders",
-        //isMoney: false,
-        link: "View all orders",
+        title: "Pedidos realizados",
+        query: "orders",  
+        link: (
+          <Link to="/orders" style={{ textDecoration: "none" }}>
+            Ver ordenes
+          </Link>
+        ),
         icon: (
           <ShoppingCartOutlinedIcon
             className="icon"
@@ -53,8 +60,8 @@ const Widget = ({ type }) => {
       break;
     case "product":
       data = {
-        title: "PRODUCTOS",
-        query:"products",
+        title: "Productos en stock",
+        query: "products", 
         link: (
           <Link to="/products" style={{ textDecoration: "none" }}>
             Ver detalles
@@ -71,68 +78,44 @@ const Widget = ({ type }) => {
         ),
       };
       break;
-      case "earning":
-        data = {
-          title: "GANANCIAS",
-          isMoney: true,
-          link: "View net earnings",
-          icon: (
-            <MonetizationOnOutlinedIcon
-              className="icon"
-              style={{ backgroundColor: "rgba(0, 128, 0, 0.2)", color: "green" }}
-            />
-          ),
-        };
-        break;
     default:
       break;
   }
 
   useEffect(() => {
     const fetchData = async () => {
-      const today = new Date();
-      const lastMonth = new Date(new Date().setMonth(today.getMonth() - 1));
-      const prevMonth = new Date(new Date().setMonth(today.getMonth() - 2));
-
-      const lastMonthQuery = query(
-        collection(db, data.query),
-        where("timeStamp", "<=", today),
-        where("timeStamp", ">", lastMonth)
-      );
-      const prevMonthQuery = query(
-        collection(db, data.query),
-        where("timeStamp", "<=", lastMonth),
-        where("timeStamp", ">", prevMonth)
-      );
-
-      const lastMonthData = await getDocs(lastMonthQuery);
-      const prevMonthData = await getDocs(prevMonthQuery);
-
-      setAmount(lastMonthData.docs.length);
-      setDiff(
-        ((lastMonthData.docs.length - prevMonthData.docs.length) / prevMonthData.docs.length) *
-          100
-      );
+      if (data && data.query === "users") {
+        //fetch from Realtime Database for users
+        const db = getDatabase();  //initilize for user firebasereal-time db 
+        const usersRef = ref(db, "users");  
+        onValue(usersRef, (snapshot) => {
+          const usersData = snapshot.val();
+          if (usersData) {
+            setAmount(Object.keys(usersData).length);  //count the number of ''
+          } else {
+            setAmount(0);  
+          }
+          setDiff(0); 
+        });
+      } else if (data && (data.query === "products" || data.query === "orders")) {
+        const querySnapshot = await getDocs(collection(firestoreDb, data.query));
+        setAmount(querySnapshot.size); 
+        setDiff(0); 
+      }
     };
     fetchData();
-  }, []);
+  }, [data.query]);
 
   return (
     <div className="widget">
       <div className="left">
         <span className="title">{data.title}</span>
         <span className="counter">
-          {data.isMoney && "$"} {amount}
+          {data.isMoney && "$"} {amount} {/*to display the # of users, products and orders */}
         </span>
         <span className="link">{data.link}</span>
       </div>
-      <div className="right">
-        <div className={`percentage ${diff < 0 ? "negative" : "positive"}`}>
-          {diff < 0 ? <KeyboardArrowDownIcon/> : <KeyboardArrowUpIcon/> }
-          {diff} %
-        </div>
-        {data.icon}
-      </div>
+
     </div>
   );
 };

@@ -1,59 +1,42 @@
 import "./datatable.scss";
 import { DataGrid } from "@mui/x-data-grid";
-import { userColumns, userRows } from "../../datatablesource";
+import { userColumns } from "../../datatablesource";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
-import {
-  collection,
-  getDocs,
-  deleteDoc,
-  doc,
-  onSnapshot,
-} from "firebase/firestore";
-import { db } from "../../firebase";
+import { getDatabase, ref, onValue, remove } from "firebase/database";
 
 const Datatable = () => {
   const [data, setData] = useState([]);
 
   useEffect(() => {
-    // const fetchData = async () => {
-    //   let list = [];
-    //   try {
-    //     const querySnapshot = await getDocs(collection(db, "users"));
-    //     querySnapshot.forEach((doc) => {
-    //       list.push({ id: doc.id, ...doc.data() });
-    //     });
-    //     setData(list);
-    //     console.log(list);
-    //   } catch (err) {
-    //     console.log(err);
-    //   }
-    // };
-    // fetchData();
+    const db = getDatabase();
 
-    // LISTEN (REALTIME)
-    const unsub = onSnapshot(
-      collection(db, "users"),
-      (snapShot) => {
-        let list = [];
-        snapShot.docs.forEach((doc) => {
-          list.push({ id: doc.id, ...doc.data() });
-        });
-        setData(list);
-      },
-      (error) => {
-        console.log(error);
-      }
-    );
-
-    return () => {
-      unsub();
+    const fetchData = () => {
+      const usersRef = ref(db, "users");
+      onValue(
+        usersRef,
+        (snapshot) => {
+          const data = snapshot.val();
+          let list = [];
+          for (let id in data) {
+            list.push({ id, ...data[id] });
+          }
+          setData(list);
+        },
+        (error) => {
+          console.log("Error fetching data: ", error);
+        }
+      );
     };
+
+    fetchData();
   }, []);
 
   const handleDelete = async (id) => {
+    const db = getDatabase();
     try {
-      await deleteDoc(doc(db, "users", id));
+      const userRef = ref(db, `users/${id}`);
+      await remove(userRef);
       setData(data.filter((item) => item.id !== id));
     } catch (err) {
       console.log(err);
@@ -68,9 +51,6 @@ const Datatable = () => {
       renderCell: (params) => {
         return (
           <div className="cellAction">
-            <Link to="/users/test" style={{ textDecoration: "none" }}>
-              <div className="viewButton">Ver</div>
-            </Link>
             <div
               className="deleteButton"
               onClick={() => handleDelete(params.row.id)}
@@ -82,11 +62,10 @@ const Datatable = () => {
       },
     },
   ];
+
   return (
     <div className="datatable">
-      <div className="datatableTitle">
-        Historial de Usuarios
-      </div>
+      <div className="datatableTitle">Historial de Usuarios</div>
       <DataGrid
         className="datagrid"
         rows={data}

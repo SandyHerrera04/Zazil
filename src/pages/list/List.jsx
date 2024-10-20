@@ -5,6 +5,7 @@ import Datatable from "../../components/datatable/Datatable"
 import DatatableProducts from "../../components/datatableProducts/DatatableProducts"
 import DatatableOrders from "../../components/datatableOrders/DatatableOrders"
 
+
 const List = ({ type }) => {
   return (
     <div className="list">
